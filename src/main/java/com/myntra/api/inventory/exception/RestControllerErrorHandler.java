@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.myntra.api.inventory.controller.InventoryController;
 import com.myntra.api.inventory.response.BaseResponse;
+import com.myntra.api.inventory.util.ErrorConstants;
 import com.myntra.api.inventory.util.ErrorUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -38,21 +39,21 @@ public class RestControllerErrorHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<BaseResponse> handleGeneralException(Exception ex) throws Exception {
 		BaseResponse response = new BaseResponse();
-		response.setErrors(errorUtil.getErrors("GENERAL_EXCEPTION"));
+		response.setErrors(errorUtil.getErrors(ErrorConstants.INTERNAL_SERVER_ERROR));
 		return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler({JsonMappingException.class, JsonProcessingException.class})
 	public ResponseEntity<BaseResponse> handleJsonMappingException(Exception e) throws Exception {
 		BaseResponse response = new BaseResponse();
-		response.setErrors(errorUtil.getErrors("INVALID_JSON"));
+		response.setErrors(errorUtil.getErrors(ErrorConstants.INVALID_JSON));
 		return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler({HttpMessageNotReadableException.class, ServletRequestBindingException.class})
 	public ResponseEntity<BaseResponse> handleRequestFieldsException(Exception ex) throws Exception {
 		BaseResponse response = new BaseResponse();
-		response.setErrors(errorUtil.getErrors("GENR0002"));
+		response.setErrors(errorUtil.getErrors(ErrorConstants.INVALID_JSON));
 		return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
 	}
 }

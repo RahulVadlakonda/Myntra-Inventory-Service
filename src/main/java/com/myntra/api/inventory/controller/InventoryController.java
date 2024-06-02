@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.myntra.api.inventory.response.InventoryResponse;
 import com.myntra.api.inventory.service.InventoryService;
+import com.myntra.api.inventory.util.ErrorConstants;
 import com.myntra.api.inventory.validator.RequestDataValidator;
 import com.myntra.api.inventory.exception.RequestValidationException;
 import com.myntra.api.inventory.request.InventoryRequest;
@@ -35,7 +36,7 @@ public class InventoryController {
 			@RequestParam(value = "productId", required = false) String productId) {
 		if (null == productId) {
 			Set<String> errorCodes = new HashSet<>();
-			errorCodes.add("PROD0001");
+			errorCodes.add(ErrorConstants.INVALID_PRODUCT_ID);
 			throw new RequestValidationException(errorCodes);
 		}
 		return inventoryService.getInventoryQuantity(productId);

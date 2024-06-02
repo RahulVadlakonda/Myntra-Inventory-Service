@@ -7,6 +7,8 @@ import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.stereotype.Component;
 
+import com.myntra.api.inventory.logger.ServiceLogger;
+
 @Component
 public class KafkaListnerErrorHandler implements CommonErrorHandler {
 
@@ -22,13 +24,13 @@ public class KafkaListnerErrorHandler implements CommonErrorHandler {
     }
 
     private void handle(Exception exception, Consumer<?, ?> consumer) {
-        System.out.println("Exception thrown " + exception);
+        ServiceLogger.info(getClass(), "Inside handle method with exception: " + exception);
         if (exception instanceof RecordDeserializationException ex) {
             consumer.seek(ex.topicPartition(), ex.offset() + 1L);
             consumer.commitSync();
         } 
         else {
-        	 System.out.println("Exception thrown" + exception);
+        	ServiceLogger.error(getClass(), "Exception thrown" + exception);
         }
     }
 }

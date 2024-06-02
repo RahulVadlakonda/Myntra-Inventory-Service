@@ -26,7 +26,7 @@ public class InventoryQueryUtil {
 		
 		Inventory inventory = inventoryRespository.findTop1ByProduct(productId);
 		if (null == inventory) {
-			throw new EntityNotFoundException("INVN0001");
+			throw new EntityNotFoundException(ErrorConstants.PRODUCT_NOT_FOUND_IN_INVENTORY);
 		}
 		return inventory;
 	}
@@ -43,7 +43,7 @@ public class InventoryQueryUtil {
 			throw new DBException(e.getMessage());
 		}
 		if (productOptional.isEmpty()) {
-			throw new EntityNotFoundException("PROD0010");
+			throw new EntityNotFoundException(ErrorConstants.PRODUCT_NOT_FOUND);
 		}
 		return productOptional.get();
 	}

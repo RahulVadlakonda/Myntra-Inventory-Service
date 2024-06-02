@@ -22,16 +22,16 @@ import com.myntra.api.inventory.request.InventoryRequest;
 @Configuration
 public class KafkaConsumerConfig {
 	
-	@Value("${inventory.update.kafka.servers}")
+	@Value("${inventory.kafka.servers}")
 	private String KAFKA_BOOTSTRAP_SERVERS;
 	
-	@Value("${inventory.update.kafka.username}")
+	@Value("${inventory.kafka.username}")
 	private String KAFKA_USERNAME;
 	
-	@Value("${inventory.update.kafka.password}")
+	@Value("${inventory.kafka.password}")
 	private String KAFKA_PW;
 	
-	@Value("${inventory.update.kafka.groupId}")
+	@Value("${inventory.kafka.groupId}")
 	private String KAFKA_CONSUMER_GROUPID;
 	
 	@Bean
@@ -40,7 +40,7 @@ public class KafkaConsumerConfig {
 	}
 	
 	@Bean
-	public ConsumerFactory<String, InventoryRequest> inventoryUpdateConsumerFactory() {
+	public ConsumerFactory<String, String> inventoryUpdateConsumerFactory() {
 		Map<String, Object> configProps = new HashMap<>();
 		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BOOTSTRAP_SERVERS);
 		configProps.put(SaslConfigs.SASL_JAAS_CONFIG,
@@ -49,13 +49,12 @@ public class KafkaConsumerConfig {
 		configProps.put(SaslConfigs.SASL_MECHANISM, "SCRAM-SHA-256");
 		configProps.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
 		configProps.put(ConsumerConfig.GROUP_ID_CONFIG, KAFKA_CONSUMER_GROUPID);
-		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
-				new JsonDeserializer<>(InventoryRequest.class));
+		return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new StringDeserializer());
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, InventoryRequest> kafkaListenerContainerFactory() {
-		ConcurrentKafkaListenerContainerFactory<String, InventoryRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
+	public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(inventoryUpdateConsumerFactory());
 		factory.setCommonErrorHandler(commonErrorHandler());
 		return factory;

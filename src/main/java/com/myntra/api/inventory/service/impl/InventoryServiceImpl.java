@@ -13,6 +13,7 @@ import com.myntra.api.inventory.exception.RequestValidationException;
 import com.myntra.api.inventory.request.InventoryRequest;
 import com.myntra.api.inventory.response.InventoryResponse;
 import com.myntra.api.inventory.service.InventoryService;
+import com.myntra.api.inventory.util.ErrorConstants;
 import com.myntra.api.inventory.util.InventoryQueryUtil;
 
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class InventoryServiceImpl implements InventoryService {
 		ProductGeneral productGeneral = inventoryQueryUtil.findProductById(request.getProductId());
 		if (null != inventoryQueryUtil.findInvByProductIdWithoutException(request.getProductId())) {
 			Set<String> errorCodes = new HashSet<>();
-			errorCodes.add("INVN0003");
+			errorCodes.add(ErrorConstants.PRODUCT_ALREADY_EXISTS_IN_INVENTORY);
 			throw new RequestValidationException(errorCodes);
 		}
 		Inventory inventory = new Inventory();
@@ -57,13 +58,13 @@ public class InventoryServiceImpl implements InventoryService {
 		InventoryResponse response = new InventoryResponse();
 		if (request.getOperation() == null) {
 			Set<String> errorCodes = new HashSet<>();
-			errorCodes.add("INVN0004");
+			errorCodes.add(ErrorConstants.INVALID_UPDATE_OPERATION);
 			throw new RequestValidationException(errorCodes);
 		}
 		Inventory inventory = inventoryQueryUtil.findInvByProductId(request.getProductId());
 		inventoryUpdateService.updateQuantityAndSave(inventory, request);
 		response.setProductId(inventory.getProduct().getId());
-		response.setQuantity(inventory.getQuantity());;
+		response.setQuantity(inventory.getQuantity());
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
